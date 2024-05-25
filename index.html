@@ -6,6 +6,7 @@
     <title>Wine Quality Scatter Plot Matrix</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="scatterplotmatrix.js"></script>
+
     <style>
         .chart {
             display: flex;
@@ -29,6 +30,21 @@
             font-weight: bold;
             text-anchor: middle;
         }
+        .cell-label:hover{
+            cursor: grab;
+        }
+        .quality-color {
+            display: flex;
+            justify-content: space-between;
+            width: 200px;
+            margin-top: 10px;
+        }
+        .quality-color div {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #fff;
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
@@ -40,6 +56,7 @@
             <label><input type="checkbox" name="quality" value="6"> Quality 6</label>
             <label><input type="checkbox" name="quality" value="7"> Quality 7</label>
         </div>
+        <div class="quality-color"></div>
         <div>
             <label><input type="checkbox" name="attribute" value="fixed acidity"> Fixed Acidity</label>
             <label><input type="checkbox" name="attribute" value="volatile acidity"> Volatile Acidity</label>
@@ -55,6 +72,7 @@
         </div>
     </div>
     <div class="chart" id="scatter"></div>
+
     <script>
         
         function updateScatterPlots(scatterPlotMatrix, data) {
@@ -67,8 +85,8 @@
             }
         }
 
-        d3.csv("https://raw.githubusercontent.com/BongYeob/data_vis_d3/master/winequality-red.csv").then(function(data) {
-            data.forEach(function(d) {
+        d3.csv("https://raw.githubusercontent.com/BongYeob/data_vis_d3/master/winequality-red.csv").then(data =>{
+            data.forEach(d => {
                 for (var key in d) {
                     d[key] = +d[key];
                 }
@@ -76,12 +94,12 @@
 
             const scatterPlotMatrix = new ScatterPlotMatrix(data);
 
-            d3.selectAll("input[name='quality'], input[name='attribute']").on("change", function() {
-                updateScatterPlots(scatterPlotMatrix, data);
-            });
-
             updateScatterPlots(scatterPlotMatrix, data);
+
+            d3.selectAll("input[name='quality']").on("change",()=> updateScatterPlots(scatterPlotMatrix, data));
+            d3.selectAll("input[name='attribute']").on("change",()=> updateScatterPlots(scatterPlotMatrix, data));
         });
     </script>
+    <script src="quality_color.js"></script>
 </body>
 </html>

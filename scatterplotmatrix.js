@@ -24,16 +24,14 @@ class ScatterPlotMatrix {
 
     drawScatterPlots(selectedQualities, attributes) {
         const filteredData = this.data.filter(d => selectedQualities.includes(d.quality));
-        const numAttributes = attributes.length;
-
-        const scatterPlotMatrix = this; // Save context
+        const scatterPlotMatrix = this;
 
         const drag = d3.drag()
             .on("start", function (event, d) {
                 d3.select(this).raise().classed("active", true);
             })
             .on("drag", function (event, d) {
-                d3.select(this).attr("x", d.x = event.x).attr("y", d.y = event.y);
+                d3.select(this).attr("x", d.x = event.x).attr("y", d.y = event.y).style("opacity", 0.5);
             })
             .on("end", function (event, d) {
                 d3.select(this).classed("active", false);
