@@ -84,7 +84,7 @@ class ScatterPlotMatrix {
                         .enter().append("circle")
                         .attr("cx", d => this.scales[col1](d[col1]))
                         .attr("cy", d => this.scales[col2](d[col2]))
-                        .attr("r", 3)
+                        .attr("r", 2.5)
                         .attr("fill", d => d3.schemeCategory10[d.quality - 3]);
 
                     cell.append("g")

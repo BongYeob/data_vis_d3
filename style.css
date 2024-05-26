@@ -1,0 +1,50 @@
+.chart {
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+svg {
+    border: 1px solid #ccc;
+}
+.axis-label {
+    font-size: 12px;
+    fill: #000;
+}
+.scatter_controls {
+    text-align: center;
+}
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.cell-label {
+    font-size: 14px;
+    font-weight: bold;
+    text-anchor: middle;
+}
+.cell-label:hover{
+    cursor: grab;
+}
+.quality-color {
+    display: flex;
+    justify-content: space-between;
+    width: 200px;
+    margin-top: 10px;
+}
+.quality-color div {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #fff;
+    margin-right: 5px;
+}
+
+
+.y-select, .x-select {
+    display: inline-block; /* 인라인 블록 요소로 설정하여 옆으로 정렬 */
+    margin-right: 20px; /* 선택 영역 사이의 간격 설정 */
+}
+#bubble_chart {
+    text-align: center; /* 내용 가운데 정렬 */
+}
