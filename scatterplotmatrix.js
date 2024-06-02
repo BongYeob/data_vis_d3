@@ -4,7 +4,8 @@ class ScatterPlotMatrix {
         this.size = 200;
         this.padding = 50;
         this.svg = null;
-        this.scales = {};
+        this.xScales = {};
+        this.yScales = {};
     }
 
     initialize(attributes) {
@@ -16,9 +17,13 @@ class ScatterPlotMatrix {
             .attr("transform", `translate(${this.padding / 2}, ${this.padding / 2})`);
 
         attributes.forEach(attr => {
-            this.scales[attr] = d3.scaleLinear()
+            this.xScales[attr] = d3.scaleLinear()
                 .domain(d3.extent(this.data, d => d[attr]))
                 .range([this.padding / 2, this.size - this.padding / 2]);
+
+            this.yScales[attr] = d3.scaleLinear()
+                .domain(d3.extent(this.data, d => d[attr]))
+                .range([this.size - this.padding / 2, this.padding / 2]);
         });
     }
 
@@ -56,10 +61,10 @@ class ScatterPlotMatrix {
                             scatterPlotMatrix.update(selectedQualities, attributes);
                         }
                     } else {
-                        scatterPlotMatrix.update(selectedQualities, attributes); // Reset position if not dropped on a valid grid
+                        scatterPlotMatrix.update(selectedQualities, attributes);
                     }
                 } else {
-                    scatterPlotMatrix.update(selectedQualities, attributes); // Reset position if not dropped on a valid grid
+                    scatterPlotMatrix.update(selectedQualities, attributes);
                 }
             });
 
@@ -70,7 +75,7 @@ class ScatterPlotMatrix {
 
                 if (i === j) {
                     cell.append("text")
-                        .datum({ x: this.size / 2, y: this.size / 2 }) // Set initial x, y positions in datum
+                        .datum({ x: this.size / 2, y: this.size / 2 })
                         .attr("class", "cell-label")
                         .attr("x", this.size / 2)
                         .attr("y", this.size / 2)
@@ -82,18 +87,18 @@ class ScatterPlotMatrix {
                     cell.selectAll("circle")
                         .data(filteredData)
                         .enter().append("circle")
-                        .attr("cx", d => this.scales[col1](d[col1]))
-                        .attr("cy", d => this.scales[col2](d[col2]))
+                        .attr("cx", d => this.xScales[col1](d[col1]))
+                        .attr("cy", d => this.yScales[col2](d[col2]))
                         .attr("r", 2.5)
                         .attr("fill", d => d3.schemeCategory10[d.quality - 3]);
 
                     cell.append("g")
                         .attr("transform", `translate(0, ${this.size - this.padding / 2})`)
-                        .call(d3.axisBottom(this.scales[col1]).ticks(5));
+                        .call(d3.axisBottom(this.xScales[col1]).ticks(5));
 
                     cell.append("g")
                         .attr("transform", `translate(${this.padding / 2}, 0)`)
-                        .call(d3.axisLeft(this.scales[col2]).ticks(5));
+                        .call(d3.axisLeft(this.yScales[col2]).ticks(5));
                 }
             });
         });

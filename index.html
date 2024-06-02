@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wine Quality Scatter Plot Matrix</title>
+    <title>Wine Quality</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="scatterplotmatrix.js"></script>
     <script src="bubble.js"></script>
+    <script src="violin.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
     <link href="style.css" rel="stylesheet">
-    
 </head>
 <body>
     <div class="controls">
@@ -24,56 +25,61 @@
 
     <div class="scatter_chart">
         <div class="scatter_controls">
+            <label><input type="checkbox" name="attribute" value="residual sugar"> Residual Sugar</label>
+            <label><input type="checkbox" name="attribute" value="density"> Density</label>
+            <label><input type="checkbox" name="attribute" value="chlorides"> Chlorides</label>
             <label><input type="checkbox" name="attribute" value="fixed acidity"> Fixed Acidity</label>
             <label><input type="checkbox" name="attribute" value="volatile acidity"> Volatile Acidity</label>
             <label><input type="checkbox" name="attribute" value="citric acid"> Citric Acid</label>
-            <label><input type="checkbox" name="attribute" value="residual sugar"> Residual Sugar</label>
-            <label><input type="checkbox" name="attribute" value="chlorides"> Chlorides</label>
+            <label><input type="checkbox" name="attribute" value="pH"> pH</label>
             <label><input type="checkbox" name="attribute" value="free sulfur dioxide"> Free Sulfur Dioxide</label>
             <label><input type="checkbox" name="attribute" value="total sulfur dioxide"> Total Sulfur Dioxide</label>
-            <label><input type="checkbox" name="attribute" value="density"> Density</label>
-            <label><input type="checkbox" name="attribute" value="pH"> pH</label>
             <label><input type="checkbox" name="attribute" value="sulphates"> Sulphates</label>
             <label><input type="checkbox" name="attribute" value="alcohol"> Alcohol</label>
         </div>
         <div class="chart" id="scatter"></div>
     </div>
-    
-    <div id="bubble_chart">
+    <br><br><br><br>
+    <div class="bubble_chart">
         <div class="chart" id="bubble"></div>
         <div class="y-select">
             <label for="y-attribute">Y Axis:</label>
             <select id="y-attribute">
-                <option value="alcohol" selected>Alcohol</option>
+                <option value="residual sugar"selected>Residual Sugar</option>
+                <option value="density">Density</option>
+                <option value="chlorides">Chlorides</option>
                 <option value="fixed acidity">Fixed Acidity</option>
                 <option value="volatile acidity">Volatile Acidity</option>
                 <option value="citric acid">Citric Acid</option>
-                <!-- <option value="residual sugar">Residual Sugar</option> -->
-                <option value="chlorides">Chlorides</option>
+                <option value="pH">pH</option>
                 <option value="free sulfur dioxide">Free Sulfur Dioxide</option>
                 <option value="total sulfur dioxide">Total Sulfur Dioxide</option>
-                <option value="density">Density</option>
-                <option value="pH">pH</option>
                 <option value="sulphates">Sulphates</option>
+                <!-- <option value="alcohol" >Alcohol</option> -->
             </select>
         </div>
         <div class="x-select">
             <label for="x-attribute">X Axis:</label>
             <select id="x-attribute">
-                <option value="alcohol">Alcohol</option>
+                <option value="residual sugar">Residual Sugar</option>
+                <option value="density">Density</option>
+                <option value="chlorides">Chlorides</option>
                 <option value="fixed acidity">Fixed Acidity</option>
                 <option value="volatile acidity">Volatile Acidity</option>
                 <option value="citric acid">Citric Acid</option>
-                <!-- <option value="residual sugar">Residual Sugar</option> -->
-                <option value="chlorides">Chlorides</option>
+                <option value="pH"selected>pH</option>
                 <option value="free sulfur dioxide">Free Sulfur Dioxide</option>
                 <option value="total sulfur dioxide">Total Sulfur Dioxide</option>
-                <option value="density">Density</option>
-                <option value="pH" selected>pH</option>
                 <option value="sulphates">Sulphates</option>
+                <!-- <option value="alcohol" >Alcohol</option> -->
             </select>
         </div>
         <button id="reset-button">Reset</button>
+        <div class="radius" id="min"></div>
+    </div>
+    <br><br><br><br>
+    <div class="violin_chart">
+        <div class="chart" id="violin"></div>
     </div>
 
     <script>
@@ -95,23 +101,32 @@
             bubblePlot.update(selectedQualities, xAttribute, yAttribute);
         }  
 
+        function updateViolinPlot(violinPlot, data){
+            const selectedQualities = d3.selectAll("input[name='quality']:checked").nodes().map(d => +d.value);
+            violinPlot.update(selectedQualities);
+        }
+
         d3.csv("https://raw.githubusercontent.com/BongYeob/data_vis_d3/master/winequality-red.csv").then(data =>{
             data.forEach(d => {
                 for (var key in d) {
                     d[key] = +d[key];
                 }
+                d['fs_ratio'] = d['free sulfur dioxide'] / d['total sulfur dioxide']
             });
 
             const scatterPlotMatrix = new ScatterPlotMatrix(data);
             const bubblePlot = new BubblePlot(data);
+            const violinPlot = new ViolinPlot(data);
 
             updateScatterPlots(scatterPlotMatrix, data);
             updateBubblePlot(bubblePlot, data);
+            updateViolinPlot(violinPlot, data);
 
             d3.selectAll("input[name='quality']").on("change", () => {
                 updateScatterPlots(scatterPlotMatrix, data);
                 bubblePlot.isClick = false;
                 updateBubblePlot(bubblePlot, data);
+                updateViolinPlot(violinPlot, data);
             });
 
             d3.selectAll("input[name='attribute']").on("change",()=> updateScatterPlots(scatterPlotMatrix, data));
@@ -123,6 +138,7 @@
 
             d3.select("#reset-button").on("click",()=> {
                 bubblePlot.isClick = false;
+                d3.select("#min").html("");
                 updateBubblePlot(bubblePlot, data);
             });
         });

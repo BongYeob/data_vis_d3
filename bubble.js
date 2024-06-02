@@ -35,7 +35,7 @@ class BubblePlot {
             .nice();
 
         this.scales.z = d3.scaleSqrt()
-            .domain(d3.extent(this.data, d => d["residual sugar"]))
+            .domain(d3.extent(this.data, d => d["alcohol"]))
             .range([2, 20]);
 
         this.svg.append("g")
@@ -72,25 +72,26 @@ class BubblePlot {
             .attr("class", "bubble")
             .attr("cx", d => this.scales.x(d[xAttribute]))
             .attr("cy", d => this.scales.y(d[yAttribute]))
-            .attr("r", d => this.scales.z(d["residual sugar"]))
+            .attr("r", d => this.scales.z(d["alcohol"]))
             .attr("fill", d => d3.schemeCategory10[d.quality - 3])
-            .on("click", (event, d) => this.handleBubbleClick(d, selectedQualities, xAttribute, yAttribute))
+            .on("click", (event, d) => this.handleBubbleClick(d, selectedQualities))
             .on("mouseover", (event, d) => this.handleMouseOver(d))
             .merge(bubbles)
-            .attr("cx", d => this.scales.x(d[xAttribute])) // 새로운 원을 추가한 후에 다시 선택하여 속성을 설정합니다.
+            .attr("cx", d => this.scales.x(d[xAttribute]))
             .attr("cy", d => this.scales.y(d[yAttribute]))
-            .attr("r", d => this.scales.z(d["residual sugar"]));
+            .attr("r", d => this.scales.z(d["alcohol"]))
+            .style("stroke", "white");
     }
 
     handleMouseOver(d) {
-        const radius = this.scales.z(d["residual sugar"]);
-        console.log(`Bubble radius: ${radius}`);
+        const radius = (d["alcohol"]);
+        d3.select("#min").html("Alcohol : "+radius);
     }
 
-    handleBubbleClick(d, selectedQualities, xAttribute, yAttribute) {
+    handleBubbleClick(d, selectedQualities) {
         this.isClick = true;
-        const radius = this.scales.z(d["residual sugar"]);
-        this.data = this.data.filter(data => this.scales.z(data["residual sugar"]) >= radius);
+        const radius = d["alcohol"];
+        this.data = this.data.filter(data => data["alcohol"] >= radius);
         this.drawBubblePlot(selectedQualities, this.xAttribute, this.yAttribute);
     }
 

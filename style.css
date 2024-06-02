@@ -3,9 +3,6 @@
     justify-content: center;
     position: relative;
 }
-svg {
-    border: 1px solid #ccc;
-}
 .axis-label {
     font-size: 12px;
     fill: #000;
@@ -39,12 +36,13 @@ svg {
     border: 1px solid #fff;
     margin-right: 5px;
 }
-
-
-.y-select, .x-select {
-    display: inline-block; /* 인라인 블록 요소로 설정하여 옆으로 정렬 */
-    margin-right: 20px; /* 선택 영역 사이의 간격 설정 */
+.y-select, .x-select, .radius {
+    display: inline-block;
+    margin-right: 20px;
 }
-#bubble_chart {
-    text-align: center; /* 내용 가운데 정렬 */
+.bubble_chart {
+    text-align: center;
+}
+.bubble:hover{
+    opacity:50%;
 }
