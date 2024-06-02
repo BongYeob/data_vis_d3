@@ -8,6 +8,7 @@
     <script src="scatterplotmatrix.js"></script>
     <script src="bubble.js"></script>
     <script src="violin.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <link href="style.css" rel="stylesheet">
 </head>
@@ -80,8 +81,18 @@
     <br><br><br><br>
     <div class="violin_chart">
         <div class="chart" id="violin"></div>
+        <div id="data-table-container">
+            <table id="data-table">
+                <tbody>
+                </tbody>
+            </table>
+        </div>
     </div>
 
+    <div class="tooltip bs-tooltip-top show" id="violin-tooltip" role="tooltip" style="display:none">
+        <div class="tooltip-arrow"></div>
+        <div class="tooltip-inner"></div>
+    </div>
     <script>
         
         function updateScatterPlots(scatterPlotMatrix, data) {
@@ -116,7 +127,7 @@
 
             const scatterPlotMatrix = new ScatterPlotMatrix(data);
             const bubblePlot = new BubblePlot(data);
-            const violinPlot = new ViolinPlot(data);
+            const violinPlot = new ViolinPlot("#violin-tooltip", data);
 
             updateScatterPlots(scatterPlotMatrix, data);
             updateBubblePlot(bubblePlot, data);

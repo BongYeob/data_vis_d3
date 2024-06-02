@@ -16,18 +16,10 @@
     align-items: center;
     margin-bottom: 20px;
 }
-.cell-label {
-    font-size: 14px;
-    font-weight: bold;
-    text-anchor: middle;
-}
-.cell-label:hover{
-    cursor: grab;
-}
 .quality-color {
     display: flex;
     justify-content: space-between;
-    width: 200px;
+    width: 400px;
     margin-top: 10px;
 }
 .quality-color div {
@@ -36,6 +28,15 @@
     border: 1px solid #fff;
     margin-right: 5px;
 }
+.cell-label {
+    font-size: 14px;
+    font-weight: bold;
+    text-anchor: middle;
+}
+.cell-label:hover{
+    cursor: grab;
+}
+
 .y-select, .x-select, .radius {
     display: inline-block;
     margin-right: 20px;
@@ -45,4 +46,48 @@
 }
 .bubble:hover{
     opacity:50%;
+}
+.tooltip {
+    position: absolute;
+    z-index: 1000;
+    display: none;
+    pointer-events: none;
+}
+
+.bs-tooltip-top .tooltip-arrow::before {
+    border-width: 0.4rem 0.4rem 0;
+    border-top-color: black;
+}
+
+.tooltip-inner {
+    max-width: 200px;
+    padding: 0.25rem 0.5rem;
+    color: #fff;
+    text-align: center;
+    background-color: black;
+    border-radius: 0.25rem;
+}
+.violin_chart {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+#data-table-container {
+    margin-left: 20px;
+    width: 300px;
+    height: 450px;
+}
+#data-table {
+    height: 450px;
+}
+#data-table th, #data-table td {
+    padding: 5px;
+    text-align: left;
+}
+#data-table th {
+    background-color: #f2f2f2;
+}
+#data-table td {
+    width: 100px;
+    white-space: nowrap;
 }
