@@ -4,7 +4,7 @@ class ViolinPlot {
         this.filteredData = data;
         this.tooltipId = tooltipId;
         this.tooltip = d3.select(tooltipId);
-        this.margin = { top: 10, right: 30, bottom: 50, left: 70 };
+        this.margin = { top: 20, right: 20, bottom: 30, left: 20 };
         this.width = 960 - this.margin.left - this.margin.right;
         this.height = 500 - this.margin.top - this.margin.bottom;
         this.svg = null;

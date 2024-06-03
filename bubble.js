@@ -2,7 +2,7 @@ class BubblePlot {
     constructor(data) {
         this.originalData = data;
         this.data = data;
-        this.margin = {top: 20, right: 20, bottom: 30, left: 40};
+        this.margin = {top: 20, right: 20, bottom: 30, left: 20};
         this.width = 960 - this.margin.left - this.margin.right;
         this.height = 500 - this.margin.top - this.margin.bottom;
         this.svg = null;
@@ -19,7 +19,7 @@ class BubblePlot {
             .attr("width", this.width + this.margin.left + this.margin.right)
             .attr("height", this.height + this.margin.top + this.margin.bottom)
             .append("g")
-            .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+            .attr("transform", `translate(${this.margin.left}, ${this.margin.top})`);
 
         this.xAttribute = xAttribute;
         this.yAttribute = yAttribute;
