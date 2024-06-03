@@ -2,7 +2,7 @@ class BubblePlot {
     constructor(data) {
         this.originalData = data;
         this.data = data;
-        this.margin = {top: 20, right: 20, bottom: 30, left: 20};
+        this.margin = {top: 20, right: 20, bottom: 30, left: 30};
         this.width = 960 - this.margin.left - this.margin.right;
         this.height = 500 - this.margin.top - this.margin.bottom;
         this.svg = null;
