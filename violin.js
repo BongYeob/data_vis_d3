@@ -59,9 +59,9 @@ class ViolinPlot {
             .style("text-anchor", "end")
             .text("free sulfur dioxide / total sulfur dioxide");
 
-        d3.select("body").on("mousedown", (event) => this.startDrag(event));
-        d3.select("body").on("mousemove", (event) => this.drag(event));
-        d3.select("body").on("mouseup", () => this.endDrag());
+        d3.select("#violin").on("mousedown", (event) => this.startDrag(event));
+        d3.select("#violin").on("mousemove", (event) => this.drag(event));
+        d3.select("#violin").on("mouseup", () => this.endDrag());
     }
     startDrag(event) {
         this.isDragging = true;
