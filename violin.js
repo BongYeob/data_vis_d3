@@ -1,6 +1,7 @@
 class ViolinPlot {
     constructor(tooltipId, data) {
         this.data = data;
+        this.filteredData = data;
         this.tooltipId = tooltipId;
         this.tooltip = d3.select(tooltipId);
         this.margin = { top: 10, right: 30, bottom: 50, left: 70 };
@@ -11,30 +12,16 @@ class ViolinPlot {
         this.y = null;
         this.popperInstance = null;
         this.keysOrder = [
-            "residual sugar", "density", "chlorides", "fixed acidity", 
+            "quality", "residual sugar", "density", "chlorides", "fixed acidity", 
             "volatile acidity", "citric acid", "pH", "free sulfur dioxide", 
             "total sulfur dioxide", "sulphates", "alcohol"
         ];
     }
 
-    initializeTable() {
-        const tableContainer = d3.select("#data-table-container");
-        const table = tableContainer.select("#data-table");
-        const tbody = table.select("tbody");
-
-        tbody.html("");
-
-        this.keysOrder.forEach(key => {
-            const row = tbody.append("tr");
-            row.append("th").text(key);
-            row.append("td").text("");
-        });
-    }
-
     initialize() {
-        this.initializeTable();
-
         d3.select("#violin").html("");
+        const tbody = d3.select("#data-table tbody");
+        tbody.selectAll("tr").remove();
         this.svg = d3.select("#violin").append("svg")
             .attr("width", this.width + this.margin.left + this.margin.right)
             .attr("height", this.height + this.margin.top + this.margin.bottom)
@@ -47,11 +34,6 @@ class ViolinPlot {
             .range([0, this.width])
             .domain([3, 4, 5, 6, 7])
             .padding(0.05);
-
-        this.y = d3.scaleLinear()
-            .range([this.height, 0])
-            .domain([0, 1]);
-
         this.svg.append("g")
             .attr("class", "x axis")
             .attr("transform", `translate(0,${this.height})`)
@@ -63,6 +45,9 @@ class ViolinPlot {
             .style("text-anchor", "end")
             .text("quality");
 
+        this.y = d3.scaleLinear()
+            .range([this.height, 0])
+            .domain([0, 1]);
         this.svg.append("g")
             .attr("class", "y axis")
             .call(d3.axisLeft(this.y))
@@ -73,12 +58,29 @@ class ViolinPlot {
             .attr("dy", ".71em")
             .style("text-anchor", "end")
             .text("free sulfur dioxide / total sulfur dioxide");
+
+        d3.select("body").on("mousedown", (event) => this.startDrag(event));
+        d3.select("body").on("mousemove", (event) => this.drag(event));
+        d3.select("body").on("mouseup", () => this.endDrag());
     }
-
+    startDrag(event) {
+        this.isDragging = true;
+        this.handleMouseEvent(event);
+    }
+    
+    drag(event) {
+        if (this.isDragging) {
+            this.handleMouseEvent(event);
+        }
+    }
+    
+    endDrag() {
+        this.isDragging = false;
+    }
     drawViolinPlots(selectedQualities) {
-        const filteredData = this.data.filter(d => selectedQualities.includes(d.quality));
+        this.filteredData = this.data.filter(d => selectedQualities.includes(d.quality));
 
-        const dataGrouped = d3.groups(filteredData, d => d.quality);
+        const dataGrouped = d3.groups(this.filteredData, d => d.quality);
 
         const histogram = d3.histogram()
             .domain(this.y.domain())
@@ -119,7 +121,7 @@ class ViolinPlot {
 
         const jitterWidth = 50;
         this.svg.selectAll("indPoints")
-            .data(filteredData)
+            .data(this.filteredData)
             .enter()
             .append("circle")
             .attr("cx", d => this.x(d.quality) + this.x.bandwidth() / 2 - Math.random() * jitterWidth)
@@ -131,7 +133,6 @@ class ViolinPlot {
             })
             .on("mouseover", (event, d) => this.showTooltip(event, d))
             .on("mouseout", () => this.hideTooltip())
-            .on("click", (event, d) => this.showDataInTable(d));
     }
 
     showTooltip(event, d) {
@@ -159,21 +160,39 @@ class ViolinPlot {
         }
     }
 
-    showDataInTable(d) {
-        const tableContainer = d3.select("#data-table-container");
-        const table = tableContainer.select("#data-table");
-        const tbody = table.select("tbody");
+    handleMouseEvent(event) {
+        const [mouseX, mouseY] = d3.pointer(event, this.svg.node());
+        const clickedYValue = this.y.invert(mouseY);
+    
+        const matchingData = this.filteredData.filter(d => Math.abs(d.fs_ratio - clickedYValue) < 0.01); // 0.01 오차 범위
 
-        tbody.selectAll("tr").select("td").text("");
+        this.updateTable(matchingData);
+    
+        this.svg.selectAll(".clicked-line").remove();
+        this.svg.append("line")
+            .attr("class", "clicked-line")
+            .attr("x1", 0)
+            .attr("x2", this.width)
+            .attr("y1", this.y(clickedYValue))
+            .attr("y2", this.y(clickedYValue))
+            .attr("stroke", "red")
+            .attr("stroke-width", 1);
+    }
 
-        this.keysOrder.forEach(key => {
-            tbody.selectAll("tr")
-                .filter(function() { return d3.select(this).select("th").text() === key; })
-                .select("td")
-                .text(() => {
+    updateTable(data) {
+        const sortedData = data.sort((a, b) => a.quality - b.quality);
+    
+        const tbody = d3.select("#data-table tbody");
+        tbody.selectAll("tr").remove();
+    
+        sortedData.forEach(d => {
+            const row = tbody.append("tr");
+            this.keysOrder.forEach(key => {
+                row.append("td").text(() => {
                     let value = d[key];
                     return (typeof value === "number" && value.toString().split(".")[1]?.length > 6)? value.toFixed(6): value;
                 });
+            });
         });
     }
 

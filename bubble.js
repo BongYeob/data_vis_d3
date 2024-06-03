@@ -66,7 +66,7 @@ class BubblePlot {
         const bubbles = this.svg.selectAll(".bubble")
             .data(filteredData, d => d.id);
 
-        bubbles.exit().remove();
+        bubbles.exit().transition().duration(1000).style("opacity", 0).remove();
 
         bubbles.enter().append("circle")
             .attr("class", "bubble")

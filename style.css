@@ -67,27 +67,29 @@
     background-color: black;
     border-radius: 0.25rem;
 }
-.violin_chart {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-}
-#data-table-container {
-    margin-left: 20px;
-    width: 300px;
-    height: 450px;
-}
 #data-table {
-    height: 450px;
+    margin: 0 auto; 
+    border-collapse: collapse;
+    width: 900px;
 }
-#data-table th, #data-table td {
-    padding: 5px;
-    text-align: left;
-}
+
 #data-table th {
-    background-color: #f2f2f2;
+    background-color: #ffffff;
+    color: black;
+    padding: 10px;
+    border: 1px solid #ddd;
 }
+
 #data-table td {
-    width: 100px;
-    white-space: nowrap;
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+#data-table tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+#data-table tbody tr:nth-child(even) {
+    background-color: #ffffff;
 }
